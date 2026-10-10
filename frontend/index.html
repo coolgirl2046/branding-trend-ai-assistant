@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="네이버 데이터랩 검색 관심도에 근거한 브랜딩 트렌드 AI 비서"
+    >
+    <title>브랜딩 트렌드 AI 비서</title>
+    <link rel="stylesheet" href="./css/styles.css">
+  </head>
+  <body>
+    <header id="app-header">
+      <h1>브랜딩 트렌드 AI 비서</h1>
+      <p>
+        퍼스널브랜딩, 이미지메이킹, 스피치의 상대 검색 관심도를 확인하고
+        데이터에 근거해 콘텐츠 방향을 정리합니다.
+      </p>
+      <p id="metric-notice">
+        네이버 데이터랩 값은 실제 검색량이 아닌 상대 검색 관심도 지수입니다.
+      </p>
+    </header>
+
+    <div id="app-loading" role="status" aria-live="polite" hidden>
+      데이터를 불러오는 중입니다.
+    </div>
+    <div id="app-error" role="alert" hidden>
+      <p id="app-error-message"></p>
+    </div>
+
+    <main id="main-content">
+      <section id="summary-section" aria-labelledby="summary-heading">
+        <header>
+          <h2 id="summary-heading">데이터 요약</h2>
+          <button id="summary-refresh-button" type="button">새로고침</button>
+        </header>
+
+        <dl id="summary-overall">
+          <div>
+            <dt>분석 기간</dt>
+            <dd>
+              <span id="summary-start-date">-</span>
+              부터
+              <span id="summary-end-date">-</span>
+              까지
+            </dd>
+          </div>
+          <div>
+            <dt>전체 데이터 수</dt>
+            <dd id="summary-total-count">-</dd>
+          </div>
+        </dl>
+
+        <div id="keyword-summary-list" aria-live="polite"></div>
+
+        <section id="ranking-section" aria-labelledby="ranking-heading">
+          <h3 id="ranking-heading">최근 4주 평균 순위</h3>
+          <ol id="summary-ranking-list"></ol>
+        </section>
+
+        <p id="summary-metric-note"></p>
+        <p id="summary-empty" hidden>표시할 요약 데이터가 없습니다.</p>
+      </section>
+
+      <div id="assistant-workspace">
+        <aside
+          id="conversations-section"
+          aria-labelledby="conversations-heading"
+        >
+          <header>
+            <h2 id="conversations-heading">대화 기록</h2>
+            <button id="new-conversation-button" type="button">새 대화</button>
+          </header>
+
+          <div id="conversations-loading" role="status" aria-live="polite" hidden>
+            대화 목록을 불러오는 중입니다.
+          </div>
+          <div id="conversations-error" role="alert" hidden></div>
+          <ul id="conversation-list" aria-label="저장된 대화 목록"></ul>
+          <p id="conversations-empty" hidden>저장된 대화가 없습니다.</p>
+        </aside>
+
+        <section id="chat-section" aria-labelledby="chat-heading">
+          <header>
+            <h2 id="chat-heading">AI 채팅</h2>
+            <p id="active-conversation-title">새 대화</p>
+          </header>
+
+          <div
+            id="chat-messages"
+            role="log"
+            aria-live="polite"
+            aria-label="채팅 메시지"
+          ></div>
+          <p id="chat-empty">아직 메시지가 없습니다.</p>
+          <div id="chat-loading" role="status" aria-live="polite" hidden>
+            답변을 생성하는 중입니다.
+          </div>
+          <div id="chat-error" role="alert" hidden></div>
+
+          <form id="chat-form">
+            <label for="chat-message">질문</label>
+            <textarea
+              id="chat-message"
+              name="message"
+              rows="4"
+              maxlength="10000"
+              required
+            ></textarea>
+            <button id="chat-submit-button" type="submit">전송</button>
+          </form>
+        </section>
+      </div>
+
+      <section id="data-management-section" aria-labelledby="data-heading">
+        <header>
+          <h2 id="data-heading">데이터 관리</h2>
+          <button id="data-refresh-button" type="button">목록 새로고침</button>
+        </header>
+
+        <form id="data-form">
+          <input id="data-id" name="id" type="hidden">
+
+          <div>
+            <label for="data-date">날짜</label>
+            <input id="data-date" name="date" type="date" required>
+          </div>
+
+          <div>
+            <label for="data-keyword">키워드</label>
+            <select id="data-keyword" name="keyword" required>
+              <option value="">선택</option>
+              <option value="퍼스널브랜딩">퍼스널브랜딩</option>
+              <option value="이미지메이킹">이미지메이킹</option>
+              <option value="스피치">스피치</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="data-value">상대 검색 관심도</label>
+            <input
+              id="data-value"
+              name="value"
+              type="number"
+              min="0"
+              max="100"
+              step="any"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="data-memo">메모</label>
+            <textarea id="data-memo" name="memo" rows="3"></textarea>
+          </div>
+
+          <div>
+            <button id="data-submit-button" type="submit">추가</button>
+            <button id="data-cancel-edit-button" type="button" hidden>
+              수정 취소
+            </button>
+          </div>
+        </form>
+
+        <div id="data-loading" role="status" aria-live="polite" hidden>
+          데이터 목록을 불러오는 중입니다.
+        </div>
+        <div id="data-error" role="alert" hidden></div>
+
+        <div id="data-table-container">
+          <table id="data-table">
+            <caption>브랜딩 검색 관심도 데이터</caption>
+            <thead>
+              <tr>
+                <th scope="col">날짜</th>
+                <th scope="col">키워드</th>
+                <th scope="col">관심도</th>
+                <th scope="col">메모</th>
+                <th scope="col">작업</th>
+              </tr>
+            </thead>
+            <tbody id="data-table-body"></tbody>
+          </table>
+        </div>
+        <p id="data-empty" hidden>표시할 데이터가 없습니다.</p>
+      </section>
+    </main>
+
+    <footer id="app-footer">
+      <p>데이터 출처: 네이버 데이터랩 검색어 트렌드</p>
+    </footer>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
