@@ -9,7 +9,11 @@ import {
   sendChatMessage,
   updateData,
 } from "./api.js";
-import { renderTrendChart, serializeTrendDataJson } from "./bonus_features.mjs";
+import {
+  renderTrendChart,
+  serializeTrendDataJson,
+  TREND_KEYWORDS,
+} from "./bonus_features.mjs";
 import { setupThemeToggle } from "./theme.mjs";
 
 const KEYWORDS = ["퍼스널브랜딩", "이미지메이킹", "스피치"];
@@ -32,6 +36,11 @@ let isConversationDeleting = false;
 let editingDataId = null;
 let isDataSubmitting = false;
 let isDataDeleting = false;
+let trendRecords = [];
+let trendPeriod = "6m";
+let trendMode = "weekly";
+let showTrendPoints = false;
+const visibleTrendKeywords = new Set(TREND_KEYWORDS);
 
 function getRequiredElement(id) {
   const element = document.getElementById(id);
@@ -51,6 +60,9 @@ function cacheDomElements() {
     trendChart: getRequiredElement("trend-chart"),
     downloadDataButton: getRequiredElement("download-data-button"),
     downloadError: getRequiredElement("data-download-error"),
+    trendPeriodSelect: getRequiredElement("trend-period-select"),
+    trendModeSelect: getRequiredElement("trend-mode-select"),
+    trendPointsCheckbox: getRequiredElement("trend-points-checkbox"),
     summaryStartDate: getRequiredElement("summary-start-date"),
     summaryEndDate: getRequiredElement("summary-end-date"),
     summaryTotalCount: getRequiredElement("summary-total-count"),
@@ -311,6 +323,35 @@ function renderDataRows(records) {
   setEmptyState(elements.dataEmpty, renderedCount === 0);
 }
 
+function renderCurrentTrendChart() {
+  renderTrendChart(elements.trendChart, trendRecords, {
+    period: trendPeriod,
+    mode: trendMode,
+    visibleKeywords: visibleTrendKeywords,
+    showPoints: showTrendPoints,
+  });
+}
+
+function handleTrendControlChange() {
+  trendPeriod = elements.trendPeriodSelect.value;
+  trendMode = elements.trendModeSelect.value;
+  showTrendPoints = elements.trendPointsCheckbox.checked;
+  renderCurrentTrendChart();
+}
+
+function handleTrendLegendClick(event) {
+  const button = event.target.closest("button[data-keyword]");
+  if (!button || !elements.trendChart.contains(button)) return;
+
+  const keyword = button.dataset.keyword;
+  if (visibleTrendKeywords.has(keyword)) {
+    visibleTrendKeywords.delete(keyword);
+  } else {
+    visibleTrendKeywords.add(keyword);
+  }
+  renderCurrentTrendChart();
+}
+
 async function loadData() {
   setLoading(elements.dataLoading, true);
   hideError(elements.dataError);
@@ -318,9 +359,11 @@ async function loadData() {
 
   try {
     const records = await getData();
+    trendRecords = records;
     renderDataRows(records);
-    renderTrendChart(elements.trendChart, records);
+    renderCurrentTrendChart();
   } catch (error) {
+    trendRecords = [];
     elements.dataTableBody.replaceChildren();
     dataRecordsById.clear();
     elements.trendChart.replaceChildren();
@@ -890,6 +933,10 @@ function handleDataTableClick(event) {
 function bindEventListeners() {
   elements.summaryRefreshButton.addEventListener("click", handleSummaryRefresh);
   elements.downloadDataButton.addEventListener("click", handleDataDownload);
+  elements.trendPeriodSelect.addEventListener("change", handleTrendControlChange);
+  elements.trendModeSelect.addEventListener("change", handleTrendControlChange);
+  elements.trendPointsCheckbox.addEventListener("change", handleTrendControlChange);
+  elements.trendChart.addEventListener("click", handleTrendLegendClick);
   let themeStorage = null;
   try {
     themeStorage = window.localStorage;
