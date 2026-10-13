@@ -9,6 +9,8 @@ import {
   sendChatMessage,
   updateData,
 } from "./api.js";
+import { renderTrendChart, serializeTrendDataJson } from "./bonus_features.mjs";
+import { setupThemeToggle } from "./theme.mjs";
 
 const KEYWORDS = ["퍼스널브랜딩", "이미지메이킹", "스피치"];
 const RELATIVE_INTEREST_NOTE =
@@ -45,6 +47,10 @@ function cacheDomElements() {
     appError: getRequiredElement("app-error"),
     appErrorMessage: getRequiredElement("app-error-message"),
     summaryRefreshButton: getRequiredElement("summary-refresh-button"),
+    themeToggleButton: getRequiredElement("theme-toggle-button"),
+    trendChart: getRequiredElement("trend-chart"),
+    downloadDataButton: getRequiredElement("download-data-button"),
+    downloadError: getRequiredElement("data-download-error"),
     summaryStartDate: getRequiredElement("summary-start-date"),
     summaryEndDate: getRequiredElement("summary-end-date"),
     summaryTotalCount: getRequiredElement("summary-total-count"),
@@ -313,9 +319,14 @@ async function loadData() {
   try {
     const records = await getData();
     renderDataRows(records);
+    renderTrendChart(elements.trendChart, records);
   } catch (error) {
     elements.dataTableBody.replaceChildren();
     dataRecordsById.clear();
+    elements.trendChart.replaceChildren();
+    const chartError = document.createElement("p");
+    chartError.textContent = "그래프 데이터를 불러오지 못했습니다.";
+    elements.trendChart.append(chartError);
     setEmptyState(elements.dataEmpty, false);
     showError(
       elements.dataError,
@@ -326,6 +337,32 @@ async function loadData() {
   } finally {
     setLoading(elements.dataLoading, false);
     elements.dataRefreshButton.disabled = false;
+  }
+}
+
+async function handleDataDownload() {
+  elements.downloadDataButton.disabled = true;
+  hideError(elements.downloadError);
+  try {
+    const records = await getData();
+    const blob = new Blob([serializeTrendDataJson(records)], {
+      type: "application/json;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `branding-trend-data-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (error) {
+    showError(
+      elements.downloadError,
+      error instanceof Error ? error.message : "JSON 파일을 다운로드하지 못했습니다.",
+    );
+  } finally {
+    elements.downloadDataButton.disabled = false;
   }
 }
 
@@ -852,6 +889,18 @@ function handleDataTableClick(event) {
 
 function bindEventListeners() {
   elements.summaryRefreshButton.addEventListener("click", handleSummaryRefresh);
+  elements.downloadDataButton.addEventListener("click", handleDataDownload);
+  let themeStorage = null;
+  try {
+    themeStorage = window.localStorage;
+  } catch {
+    // Theme switching still works for this page when storage is blocked.
+  }
+  setupThemeToggle(
+    document.documentElement,
+    elements.themeToggleButton,
+    themeStorage,
+  );
   elements.newConversationButton.addEventListener("click", handleNewConversation);
   elements.conversationList.addEventListener(
     "click",

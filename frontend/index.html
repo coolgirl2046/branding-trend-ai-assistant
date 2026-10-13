@@ -12,7 +12,15 @@
   </head>
   <body>
     <header id="app-header">
-      <h1>브랜딩 트렌드 AI 비서</h1>
+      <div class="app-header-top">
+        <h1>브랜딩 트렌드 AI 비서</h1>
+        <button
+          id="theme-toggle-button"
+          type="button"
+          aria-pressed="false"
+          aria-label="다크 모드로 전환"
+        >다크 모드</button>
+      </div>
       <p>
         퍼스널브랜딩, 이미지메이킹, 스피치의 상대 검색 관심도를 확인하고
         데이터에 근거해 콘텐츠 방향을 정리합니다.
@@ -61,6 +69,23 @@
 
         <p id="summary-metric-note"></p>
         <p id="summary-empty" hidden>표시할 요약 데이터가 없습니다.</p>
+      </section>
+
+      <section id="trend-chart-section" aria-labelledby="trend-chart-heading">
+        <header>
+          <div>
+            <h2 id="trend-chart-heading">주간 검색 관심도 추이</h2>
+            <p>세 키워드의 상대 검색 관심도를 날짜별로 비교합니다.</p>
+          </div>
+          <button id="download-data-button" type="button">JSON 다운로드</button>
+        </header>
+        <div id="data-download-error" role="alert" hidden></div>
+        <div id="trend-chart" aria-live="polite">
+          <p>그래프 데이터를 불러오는 중입니다.</p>
+        </div>
+        <p class="metric-notice">
+          네이버 데이터랩 값은 실제 검색량이 아닌 상대 검색 관심도 지수입니다.
+        </p>
       </section>
 
       <div id="assistant-workspace">
