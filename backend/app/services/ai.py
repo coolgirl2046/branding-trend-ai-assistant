@@ -15,10 +15,15 @@ from openai import (
 )
 
 from backend.app.config import AISettings, load_ai_settings
+from backend.app.services.trend_tools import (
+    FUNCTION_TOOL_SCHEMA,
+    TrendToolInputError,
+)
 
 
 logger = logging.getLogger(__name__)
 MAX_DIAGNOSTIC_FIELD_LENGTH = 64
+MAX_TOOL_CALLS = 3
 
 
 class AIProviderError(RuntimeError):
@@ -90,25 +95,82 @@ class OpenAIChatService:
         self,
         *,
         system_prompt: str,
-        messages: list[dict[str, str]],
+        messages: list[dict[str, Any]],
+        tool_executor: Any | None = None,
     ) -> str:
         request_messages = [
             {"role": "system", "content": system_prompt},
-            *messages,
+            *[dict(message) for message in messages],
         ]
-        try:
-            completion = self._client.chat.completions.create(
-                model=self._model,
-                messages=request_messages,
-            )
-            content = completion.choices[0].message.content
-        except Exception as exc:
-            _log_provider_error(exc)
-            raise AIProviderError("AI 응답 생성에 실패했습니다.") from None
+        tool_calls_used = 0
 
-        if not isinstance(content, str) or not content.strip():
-            raise AIProviderError("AI 응답이 비어 있습니다.")
-        return content.strip()
+        while True:
+            request_options: dict[str, Any] = {
+                "model": self._model,
+                "messages": request_messages,
+            }
+            if tool_executor is not None and tool_calls_used < MAX_TOOL_CALLS:
+                request_options["tools"] = [FUNCTION_TOOL_SCHEMA]
+                request_options["tool_choice"] = "auto"
+            tools_enabled = "tools" in request_options
+
+            try:
+                completion = self._client.chat.completions.create(**request_options)
+                response_message = completion.choices[0].message
+            except Exception as exc:
+                _log_provider_error(exc)
+                raise AIProviderError("AI 응답 생성에 실패했습니다.") from None
+
+            calls = _get_field(response_message, "tool_calls") or []
+            if not calls:
+                content = _get_field(response_message, "content")
+                if not isinstance(content, str) or not content.strip():
+                    raise AIProviderError("AI 응답이 비어 있습니다.")
+                return content.strip()
+
+            if tool_executor is None:
+                raise AIProviderError("AI 제공자가 지원하지 않는 도구 호출을 반환했습니다.")
+            if not tools_enabled:
+                raise AIProviderError("도구 호출 한도를 초과했습니다.")
+
+            request_messages.append(_assistant_tool_message(response_message, calls))
+            for call in calls:
+                call_id = _get_field(call, "id")
+                function = _get_field(call, "function")
+                name = _get_field(function, "name")
+                raw_arguments = _get_field(function, "arguments")
+                tool_calls_used += 1
+
+                if not isinstance(call_id, str) or not call_id:
+                    raise AIProviderError("AI 도구 호출 형식이 올바르지 않습니다.")
+
+                if tool_calls_used > MAX_TOOL_CALLS:
+                    tool_result: object = {
+                        "error": f"한 번의 답변에서 도구는 최대 {MAX_TOOL_CALLS}회까지 호출할 수 있습니다."
+                    }
+                else:
+                    try:
+                        parsed_arguments = json.loads(raw_arguments)
+                        tool_result = tool_executor(name, parsed_arguments)
+                    except (json.JSONDecodeError, TypeError):
+                        tool_result = {"error": "도구 인자가 유효한 JSON 객체가 아닙니다."}
+                    except TrendToolInputError as exc:
+                        tool_result = {"error": str(exc)}
+                    except Exception:
+                        tool_result = {"error": "요청한 Firestore 데이터를 조회하지 못했습니다."}
+
+                request_messages.append(
+                    {
+                        "role": "tool",
+                        "tool_call_id": call_id,
+                        "content": json.dumps(
+                            tool_result, ensure_ascii=False, separators=(",", ":")
+                        ),
+                    }
+                )
+
+            # After the call budget is used, the next request has no tools and
+            # must provide a final answer from the results already returned.
 
 
 def create_ai_chat_service() -> OpenAIChatService:
@@ -126,7 +188,35 @@ def build_system_prompt(summary: dict[str, Any]) -> str:
         "- 전략적 해석이나 추천은 해석/제안으로 구분한다.\n"
         "- 데이터만으로 원인을 알 수 없으면 원인을 단정하지 않는다.\n"
         "- 질문과 관련된 데이터 기간과 최근 기준일을 필요할 때 명확히 언급한다.\n"
+        "- 특정 키워드와 날짜 구간의 주간 원본 데이터가 필요하면 제공된 읽기 전용 도구를 사용한다.\n"
         "- 사용자가 이해하기 쉬운 한국어로 지나치게 장황하지 않게 답한다.\n"
         "아래 JSON은 현재 Firestore 데이터에서 계산한 요약이다.\n"
         f"{summary_json}"
     )
+
+
+def _get_field(value: Any, name: str, default: Any = None) -> Any:
+    if isinstance(value, dict):
+        return value.get(name, default)
+    return getattr(value, name, default)
+
+
+def _assistant_tool_message(message: Any, calls: list[Any]) -> dict[str, Any]:
+    normalized_calls = []
+    for call in calls:
+        function = _get_field(call, "function")
+        normalized_calls.append(
+            {
+                "id": _get_field(call, "id"),
+                "type": "function",
+                "function": {
+                    "name": _get_field(function, "name"),
+                    "arguments": _get_field(function, "arguments"),
+                },
+            }
+        )
+    return {
+        "role": "assistant",
+        "content": _get_field(message, "content"),
+        "tool_calls": normalized_calls,
+    }

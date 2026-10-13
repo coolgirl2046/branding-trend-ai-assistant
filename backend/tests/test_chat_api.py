@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
+import json
 from types import SimpleNamespace
 import unittest
 from typing import Any
@@ -17,7 +18,17 @@ from openai import AuthenticationError, BadRequestError
 from backend.app.config import AISettings
 from backend.app.main import app
 from backend.app.routers.chat import get_ai_chat_service, get_chat_client
-from backend.app.services.ai import OpenAIChatService, create_ai_chat_service
+from backend.app.services.ai import (
+    AIProviderError,
+    MAX_TOOL_CALLS,
+    OpenAIChatService,
+    create_ai_chat_service,
+)
+from backend.app.services.trend_tools import (
+    FUNCTION_TOOL_SCHEMA,
+    TOOL_NAME,
+    execute_trend_tool,
+)
 
 
 class FakeSnapshot:
@@ -133,7 +144,9 @@ class FakeAIService:
         *,
         system_prompt: str,
         messages: list[dict[str, str]],
+        tool_executor: Any | None = None,
     ) -> str:
+        del tool_executor
         self.calls.append(
             {"system_prompt": system_prompt, "messages": deepcopy(messages)}
         )
@@ -146,8 +159,9 @@ class FailingAIService(FakeAIService):
         *,
         system_prompt: str,
         messages: list[dict[str, str]],
+        tool_executor: Any | None = None,
     ) -> str:
-        del system_prompt, messages
+        del system_prompt, messages, tool_executor
         raise RuntimeError("api_key=DO_NOT_EXPOSE provider internal failure")
 
 
@@ -273,6 +287,45 @@ class ChatApiTests(unittest.TestCase):
         self.assertIn("절대 검색량이 아니다", prompt)
         self.assertIn("관찰/사실", prompt)
         self.assertIn("해석/제안", prompt)
+
+    def test_chat_tool_executor_is_read_only_and_final_answer_is_persisted(self) -> None:
+        class ToolUsingAIService(FakeAIService):
+            def generate_answer(
+                service_self,
+                *,
+                system_prompt: str,
+                messages: list[dict[str, str]],
+                tool_executor: Any | None = None,
+            ) -> str:
+                del system_prompt, messages
+                result = tool_executor(
+                    TOOL_NAME,
+                    {
+                        "keyword": "스피치",
+                        "start_date": "2026-06-01",
+                        "end_date": "2026-06-08",
+                    },
+                )
+                service_self.result = result
+                return "주간 지수는 50과 51입니다."
+
+        initial_data = deepcopy(self.firestore.collections["data"])
+        tool_service = ToolUsingAIService()
+        app.dependency_overrides[get_ai_chat_service] = lambda: tool_service
+        response = self.client.post(
+            "/api/chat", json={"message": "기간 데이터를 확인해줘"}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [record["value"] for record in tool_service.result["records"]],
+            [50.0, 51.0],
+        )
+        self.assertEqual(self.firestore.collections["data"], initial_data)
+        conversation = self.firestore.collections["conversations"][
+            response.json()["conversation_id"]
+        ]
+        self.assertEqual(conversation["messages"][-1]["content"], "주간 지수는 50과 51입니다.")
 
     def test_openai_service_uses_model_and_system_message_without_network(self) -> None:
         mock_client = MagicMock()
@@ -458,6 +511,178 @@ class ChatApiTests(unittest.TestCase):
         self.assertIn("code=None", log_text)
         self.assertIn("param=None", log_text)
         self.assertNotIn(secret, log_text)
+
+
+class FunctionCallingServiceTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.firestore = FakeFirestoreClient()
+        self.mock_client = MagicMock()
+        self.service = OpenAIChatService(
+            AISettings(
+                api_key="test-key",
+                base_url="https://example.invalid/v1",
+                model="test-model",
+            ),
+            client=self.mock_client,
+        )
+        self.args = {
+            "keyword": "스피치",
+            "start_date": "2026-06-01",
+            "end_date": "2026-06-08",
+        }
+
+    @staticmethod
+    def _tool_completion(arguments: str, call_id: str = "call-1") -> Any:
+        return SimpleNamespace(
+            choices=[
+                SimpleNamespace(
+                    message=SimpleNamespace(
+                        content=None,
+                        tool_calls=[
+                            SimpleNamespace(
+                                id=call_id,
+                                function=SimpleNamespace(
+                                    name=TOOL_NAME,
+                                    arguments=arguments,
+                                ),
+                            )
+                        ],
+                    )
+                )
+            ]
+        )
+
+    @staticmethod
+    def _answer_completion(content: str = "도구 결과를 요약했습니다.") -> Any:
+        return SimpleNamespace(
+            choices=[SimpleNamespace(message=SimpleNamespace(content=content, tool_calls=None))]
+        )
+
+    def test_tool_schema_and_successful_round_trip(self) -> None:
+        self.mock_client.chat.completions.create.side_effect = [
+            self._tool_completion(json.dumps(self.args, ensure_ascii=False)),
+            self._answer_completion(),
+        ]
+
+        answer = self.service.generate_answer(
+            system_prompt="system",
+            messages=[{"role": "user", "content": "주간 데이터를 비교해줘"}],
+            tool_executor=lambda name, arguments: execute_trend_tool(
+                self.firestore, name, arguments
+            ),
+        )
+
+        self.assertEqual(answer, "도구 결과를 요약했습니다.")
+        first_call = self.mock_client.chat.completions.create.call_args_list[0].kwargs
+        self.assertEqual(first_call["tools"], [FUNCTION_TOOL_SCHEMA])
+        self.assertEqual(first_call["tool_choice"], "auto")
+        second_messages = self.mock_client.chat.completions.create.call_args_list[1].kwargs[
+            "messages"
+        ]
+        self.assertEqual(second_messages[-2]["role"], "assistant")
+        self.assertEqual(second_messages[-1]["role"], "tool")
+        self.assertEqual(second_messages[-1]["tool_call_id"], "call-1")
+        self.assertIn("상대 검색 관심도 지수", second_messages[-1]["content"])
+
+    def test_invalid_tool_arguments_return_safe_tool_error_to_model(self) -> None:
+        invalid_args = {**self.args, "keyword": "지원하지 않는 키워드"}
+        self.mock_client.chat.completions.create.side_effect = [
+            self._tool_completion(json.dumps(invalid_args, ensure_ascii=False)),
+            self._answer_completion(),
+        ]
+
+        answer = self.service.generate_answer(
+            system_prompt="system",
+            messages=[{"role": "user", "content": "데이터"}],
+            tool_executor=lambda name, arguments: execute_trend_tool(
+                self.firestore, name, arguments
+            ),
+        )
+
+        self.assertEqual(answer, "도구 결과를 요약했습니다.")
+        tool_message = self.mock_client.chat.completions.create.call_args_list[1].kwargs[
+            "messages"
+        ][-1]
+        self.assertIn("지원하지 않는 키워드", tool_message["content"])
+        self.assertEqual(self.firestore.write_count, 0)
+
+    def test_tool_execution_error_is_sanitized(self) -> None:
+        secret_error = "service-account-private-key"
+        self.mock_client.chat.completions.create.side_effect = [
+            self._tool_completion(json.dumps(self.args, ensure_ascii=False)),
+            self._answer_completion(),
+        ]
+
+        answer = self.service.generate_answer(
+            system_prompt="system",
+            messages=[{"role": "user", "content": "데이터"}],
+            tool_executor=MagicMock(side_effect=RuntimeError(secret_error)),
+        )
+
+        second_request = self.mock_client.chat.completions.create.call_args_list[1].kwargs
+        tool_content = second_request["messages"][-1]["content"]
+        self.assertEqual(answer, "도구 결과를 요약했습니다.")
+        self.assertIn("Firestore 데이터를 조회하지 못했습니다", tool_content)
+        self.assertNotIn(secret_error, tool_content)
+
+    def test_tool_call_limit_is_enforced_and_follow_up_has_no_tools(self) -> None:
+        self.mock_client.chat.completions.create.side_effect = [
+            *[
+                self._tool_completion(json.dumps(self.args, ensure_ascii=False), f"call-{index}")
+                for index in range(MAX_TOOL_CALLS)
+            ],
+            self._answer_completion(),
+        ]
+        executor = MagicMock(return_value={"records": []})
+
+        answer = self.service.generate_answer(
+            system_prompt="system",
+            messages=[{"role": "user", "content": "데이터"}],
+            tool_executor=executor,
+        )
+
+        self.assertEqual(answer, "도구 결과를 요약했습니다.")
+        self.assertEqual(executor.call_count, MAX_TOOL_CALLS)
+        final_request = self.mock_client.chat.completions.create.call_args_list[-1].kwargs
+        self.assertNotIn("tools", final_request)
+
+    def test_provider_tool_call_after_limit_fails_without_another_execution(self) -> None:
+        self.mock_client.chat.completions.create.side_effect = [
+            *[
+                self._tool_completion(json.dumps(self.args, ensure_ascii=False), f"call-{index}")
+                for index in range(MAX_TOOL_CALLS)
+            ],
+            self._tool_completion(json.dumps(self.args, ensure_ascii=False), "extra-call"),
+        ]
+        executor = MagicMock(return_value={"records": []})
+
+        with self.assertRaisesRegex(AIProviderError, "호출 한도"):
+            self.service.generate_answer(
+                system_prompt="system",
+                messages=[{"role": "user", "content": "데이터"}],
+                tool_executor=executor,
+            )
+
+        self.assertEqual(executor.call_count, MAX_TOOL_CALLS)
+        self.assertEqual(self.mock_client.chat.completions.create.call_count, MAX_TOOL_CALLS + 1)
+
+    def test_malformed_json_arguments_become_safe_error(self) -> None:
+        self.mock_client.chat.completions.create.side_effect = [
+            self._tool_completion("not-json"),
+            self._answer_completion(),
+        ]
+
+        answer = self.service.generate_answer(
+            system_prompt="system",
+            messages=[{"role": "user", "content": "데이터"}],
+            tool_executor=MagicMock(),
+        )
+
+        self.assertEqual(answer, "도구 결과를 요약했습니다.")
+        tool_content = self.mock_client.chat.completions.create.call_args_list[1].kwargs[
+            "messages"
+        ][-1]["content"]
+        self.assertIn("유효한 JSON", tool_content)
 
 
 if __name__ == "__main__":

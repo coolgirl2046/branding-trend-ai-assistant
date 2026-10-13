@@ -18,6 +18,7 @@ from backend.app.services.ai import (
     create_ai_chat_service,
 )
 from backend.app.services.data_summary import calculate_firestore_summary
+from backend.app.services.trend_tools import execute_trend_tool
 
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
@@ -100,6 +101,9 @@ def chat(
             answer = ai_service.generate_answer(
                 system_prompt=system_prompt,
                 messages=model_messages,
+                tool_executor=lambda name, arguments: execute_trend_tool(
+                    client, name, arguments
+                ),
             )
         except AIProviderError:
             raise HTTPException(
