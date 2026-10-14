@@ -584,6 +584,28 @@ class FunctionCallingServiceTests(unittest.TestCase):
         self.assertEqual(second_messages[-1]["tool_call_id"], "call-1")
         self.assertIn("상대 검색 관심도 지수", second_messages[-1]["content"])
 
+    def test_function_calling_diagnostic_logs_only_count_and_tool_names(self) -> None:
+        self.mock_client.chat.completions.create.side_effect = [
+            self._tool_completion(json.dumps(self.args, ensure_ascii=False)),
+            self._answer_completion(),
+        ]
+        private_question = "PRIVATE_USER_QUESTION"
+
+        with self.assertLogs("backend.app.services.ai", level="INFO") as captured:
+            self.service.generate_answer(
+                system_prompt="system",
+                messages=[{"role": "user", "content": private_question}],
+                tool_executor=MagicMock(return_value={"records": []}),
+            )
+
+        log_text = "\n".join(captured.output)
+        self.assertIn("function_calling_response tool_call_count=1", log_text)
+        self.assertIn(f"tool_names={TOOL_NAME}", log_text)
+        self.assertIn("tool_call_count=0 tool_names=none", log_text)
+        self.assertNotIn(private_question, log_text)
+        self.assertNotIn("start_date", log_text)
+        self.assertNotIn("test-key", log_text)
+
     def test_invalid_tool_arguments_return_safe_tool_error_to_model(self) -> None:
         invalid_args = {**self.args, "keyword": "지원하지 않는 키워드"}
         self.mock_client.chat.completions.create.side_effect = [

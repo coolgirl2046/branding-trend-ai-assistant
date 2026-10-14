@@ -122,6 +122,18 @@ class OpenAIChatService:
                 raise AIProviderError("AI 응답 생성에 실패했습니다.") from None
 
             calls = _get_field(response_message, "tool_calls") or []
+            tool_names = [
+                name
+                for call in calls
+                if isinstance(
+                    (name := _get_field(_get_field(call, "function"), "name")), str
+                )
+            ]
+            logger.info(
+                "function_calling_response tool_call_count=%d tool_names=%s",
+                len(calls),
+                ",".join(tool_names) if tool_names else "none",
+            )
             if not calls:
                 content = _get_field(response_message, "content")
                 if not isinstance(content, str) or not content.strip():
