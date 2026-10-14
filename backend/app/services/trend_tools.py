@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import math
 from datetime import date
 from numbers import Real
@@ -11,6 +12,7 @@ from backend.app.services.summary import ALLOWED_KEYWORDS, METRIC_NOTE
 from backend.scripts.seed_data import FIRESTORE_COLLECTION
 
 
+logger = logging.getLogger(__name__)
 TOOL_NAME = "get_weekly_interest_data"
 MAX_DATE_RANGE_DAYS = 5 * 366
 TOOL_DESCRIPTION = (
@@ -110,6 +112,14 @@ def get_weekly_interest_data(
             )
 
     records.sort(key=lambda record: record["date"])
+    logger.info(
+        "trend_tool_success tool_name=%s keyword=%s start_date=%s end_date=%s returned_count=%d",
+        TOOL_NAME,
+        keyword,
+        start.isoformat(),
+        end.isoformat(),
+        len(records),
+    )
     return {
         "metric_note": METRIC_NOTE,
         "keyword": keyword,
