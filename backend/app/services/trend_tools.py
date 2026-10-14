@@ -113,11 +113,8 @@ def get_weekly_interest_data(
 
     records.sort(key=lambda record: record["date"])
     logger.info(
-        "trend_tool_success tool_name=%s keyword=%s start_date=%s end_date=%s returned_count=%d",
+        "trend_tool_success tool_name=%s returned_count=%d",
         TOOL_NAME,
-        keyword,
-        start.isoformat(),
-        end.isoformat(),
         len(records),
     )
     return {

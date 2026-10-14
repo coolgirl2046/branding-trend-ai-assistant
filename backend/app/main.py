@@ -1,11 +1,14 @@
 """FastAPI application entry point for Mission 2."""
 
+import copy
+import logging.config
 import os
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from uvicorn.config import LOGGING_CONFIG
 
 from backend.app.routers.chat import router as chat_router
 from backend.app.routers.conversations import router as conversations_router
@@ -18,6 +21,25 @@ LOCAL_ORIGINS = (
     "http://localhost:5500",
     "http://127.0.0.1:5500",
 )
+APPLICATION_INFO_LOGGERS = (
+    "backend.app.services.ai",
+    "backend.app.services.trend_tools",
+)
+
+
+def _uvicorn_logging_config() -> dict:
+    """Keep Uvicorn's handlers and enable safe application INFO messages."""
+    config = copy.deepcopy(LOGGING_CONFIG)
+    for logger_name in APPLICATION_INFO_LOGGERS:
+        config["loggers"][logger_name] = {
+            "handlers": ["default"],
+            "level": "INFO",
+            "propagate": False,
+        }
+    return config
+
+
+logging.config.dictConfig(_uvicorn_logging_config())
 
 
 def _allowed_origins() -> list[str]:

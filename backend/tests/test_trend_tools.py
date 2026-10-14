@@ -91,7 +91,7 @@ class TrendToolTests(unittest.TestCase):
         self.assertNotIn("memo", result["records"][1])
         self.assertEqual(self.client.collection_names, ["data"])
 
-    def test_success_logs_only_tool_name_keyword_range_and_count(self) -> None:
+    def test_success_logs_tool_name_and_count_without_tool_arguments(self) -> None:
         with self.assertLogs(
             "backend.app.services.trend_tools", level="INFO"
         ) as captured:
@@ -106,18 +106,14 @@ class TrendToolTests(unittest.TestCase):
             )
 
         self.assertEqual(result["observation_count"], 2)
-        self.assertEqual(
-            captured.output,
-            [
-                "INFO:backend.app.services.trend_tools:"
-                "trend_tool_success tool_name=get_weekly_interest_data "
-                "keyword=스피치 start_date=2026-06-01 end_date=2026-06-08 "
-                "returned_count=2"
-            ],
-        )
+        self.assertEqual(len(captured.output), 1)
+        self.assertIn("trend_tool_success tool_name=get_weekly_interest_data", captured.output[0])
+        self.assertIn("returned_count=2", captured.output[0])
         self.assertNotIn("DO_NOT_LOG_FIREBASE_PRIVATE_KEY", captured.output[0])
         self.assertNotIn("conversation_id", captured.output[0])
         self.assertNotIn("api_key", captured.output[0].lower())
+        self.assertNotIn("2026-06-01", captured.output[0])
+        self.assertNotIn("2026-06-08", captured.output[0])
 
     def test_rejects_unsupported_keyword_without_firestore_read(self) -> None:
         with self.assertRaisesRegex(TrendToolInputError, "지원하지 않는 키워드"):
