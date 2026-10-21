@@ -346,7 +346,7 @@ button[data-action="delete"]:hover:not(:disabled) {
   font-size: 12px;
 }
 
-.trend-chart-line {
+polyline.trend-chart-line {
   fill: none;
   stroke-width: 1.7;
   stroke-linecap: round;
