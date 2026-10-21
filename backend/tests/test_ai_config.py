@@ -94,3 +94,20 @@ class AIConfigTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TokenLimitTests(unittest.TestCase):
+    def test_invalid_limits_and_parameter_are_rejected(self):
+        base = {"OPENAI_API_KEY": "test", "OPENAI_BASE_URL": "https://example.com/v1", "OPENAI_MODEL": "test"}
+        for extra in [{"AI_MAX_OUTPUT_TOKENS": "0"}, {"AI_MAX_OUTPUT_TOKENS": "4097"}, {"AI_MAX_OUTPUT_TOKENS": "abc"}, {"AI_TOKEN_PARAMETER": "invalid"}]:
+            with self.subTest(extra=extra), patch.dict(os.environ, base | extra, clear=True):
+                with self.assertRaises(ConfigurationError):
+                    load_ai_settings(MISSING_ENV_FILE)
+
+    def test_default_limit_and_compatibility_parameter(self):
+        base = {"OPENAI_API_KEY": "test", "OPENAI_BASE_URL": "https://example.com/v1", "OPENAI_MODEL": "test"}
+        with patch.dict(os.environ, base, clear=True):
+            self.assertEqual(load_ai_settings(MISSING_ENV_FILE).max_output_tokens, 800)
+        with patch.dict(os.environ, base | {"AI_TOKEN_PARAMETER": "max_tokens", "AI_MAX_OUTPUT_TOKENS": "256"}, clear=True):
+            settings = load_ai_settings(MISSING_ENV_FILE)
+            self.assertEqual((settings.token_parameter, settings.max_output_tokens), ("max_tokens", 256))

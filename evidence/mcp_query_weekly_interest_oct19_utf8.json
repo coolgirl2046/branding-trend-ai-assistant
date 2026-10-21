@@ -1,0 +1,692 @@
+[
+  {
+    "type": "rate_limit_event",
+    "rate_limit_info": {
+      "status": "allowed",
+      "resetsAt": 1792398000,
+      "rateLimitType": "five_hour",
+      "overageStatus": "rejected",
+      "overageDisabledReason": "org_level_disabled",
+      "isUsingOverage": false,
+      "unifiedWindows": {
+        "five_hour": {
+          "utilization": 0.14,
+          "resetsAt": 1792398000
+        },
+        "seven_day": {
+          "utilization": 0.28,
+          "resetsAt": 1792508400
+        }
+      }
+    },
+    "uuid": "bdff050e-8801-4fee-adb7-48cc3d4e980d",
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93"
+  },
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "C:\\Users\\pc\\Desktop\\branding-trend-ai-assistant",
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "tools": [
+      "Task",
+      "Bash",
+      "CronCreate",
+      "CronDelete",
+      "CronList",
+      "DesignSync",
+      "Edit",
+      "EnterWorktree",
+      "ExitWorktree",
+      "Glob",
+      "Grep",
+      "ListAgents",
+      "Monitor",
+      "NotebookEdit",
+      "PowerShell",
+      "PushNotification",
+      "Read",
+      "RemoteTrigger",
+      "ReportFindings",
+      "ScheduleWakeup",
+      "SendMessage",
+      "Skill",
+      "TaskOutput",
+      "TaskStop",
+      "ToolSearch",
+      "WebFetch",
+      "WebSearch",
+      "Write",
+      "mcp__claude_ai_Claude_Docs__batch",
+      "mcp__claude_ai_Claude_Docs__create",
+      "mcp__claude_ai_Claude_Docs__delete",
+      "mcp__claude_ai_Claude_Docs__export",
+      "mcp__claude_ai_Claude_Docs__guide",
+      "mcp__claude_ai_Claude_Docs__query",
+      "mcp__claude_ai_Claude_Docs__read",
+      "mcp__claude_ai_Claude_Docs__update"
+    ],
+    "mcp_servers": [
+      {
+        "name": "branding-trend-ai-assistant",
+        "status": "pending"
+      },
+      {
+        "name": "claude.ai Claude Docs",
+        "status": "connected"
+      },
+      {
+        "name": "claude.ai Google Drive",
+        "status": "needs-auth"
+      },
+      {
+        "name": "claude.ai Gmail",
+        "status": "needs-auth"
+      },
+      {
+        "name": "claude.ai Google Calendar",
+        "status": "needs-auth"
+      }
+    ],
+    "model": "claude-sonnet-5",
+    "permissionMode": "default",
+    "slash_commands": [
+      "design-sync",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "schedule",
+      "claude-api",
+      "run",
+      "run-skill-generator",
+      "agents",
+      "auto-mode-setup",
+      "autocompact",
+      "clear",
+      "color",
+      "compact",
+      "config",
+      "context",
+      "effort",
+      "fast",
+      "heapdump",
+      "init",
+      "mcp",
+      "import",
+      "model",
+      "__remote-workflow",
+      "workflow-launch-exec",
+      "reload-skills",
+      "rename",
+      "ultrareview",
+      "security-review",
+      "usage-credits",
+      "extra-usage",
+      "usage",
+      "insights",
+      "recap",
+      "goal",
+      "design",
+      "design-consent",
+      "design-revoke",
+      "list-agents",
+      "team-onboarding"
+    ],
+    "terminal_slash_commands": [
+      "doctor",
+      "color"
+    ],
+    "apiKeySource": "none",
+    "claude_code_version": "2.1.245",
+    "output_style": "default",
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup"
+    ],
+    "skills": [
+      "design-sync",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "schedule",
+      "claude-api",
+      "run",
+      "run-skill-generator"
+    ],
+    "plugins": [],
+    "capabilities": [
+      "interrupt_receipt_v1",
+      "interrupt_cancel_queued_v1",
+      "msg_lifecycle_v1"
+    ],
+    "analytics_disabled": false,
+    "product_feedback_disabled": false,
+    "uuid": "0e557a7e-fd28-44f9-8c00-3c7951495ce6",
+    "memory_paths": {
+      "auto": "C:\\Users\\pc\\.claude\\projects\\C--Users-pc-Desktop-branding-trend-ai-assistant\\memory\\"
+    },
+    "messaging_socket_path": "\\\\.\\pipe\\LOCAL\\cc-msg-f05d7d04c8d98c43f2d8acd6ccf0e1f5",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required"
+  },
+  {
+    "type": "system",
+    "subtype": "thinking_tokens",
+    "estimated_tokens": 50,
+    "estimated_tokens_delta": 50,
+    "uuid": "15318a88-efb8-4821-932c-4576ea223eae",
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93"
+  },
+  {
+    "type": "system",
+    "subtype": "thinking_tokens",
+    "estimated_tokens": 240,
+    "estimated_tokens_delta": 190,
+    "uuid": "e804ca8b-a72c-4214-b6a9-4dbcdbca0719",
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-5",
+      "id": "msg_011CgBFWYpFsfHwLY5ezpxpu",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "thinking",
+          "thinking": "",
+          "signature": "ErkHCusCCBIYAipA5VG9QnUdMInEwWeRrjHJNTvxAAHgggQBzuA5fiDWY0q53a/82AoouUAZmGsYi1w8Y2MUbtobPxpnNgpG6/k4zTIPY2xhdWRlLXNvbm5ldC01OABCCHRoaW5raW5nWiQ1ZmQ1ZWM3Zi1iNDY0LTQ5ZWItYTg1MC05N2U0ODQxNTg5YWFyEKNvcddeJrf5NGyNZrypav2IAQGaAREKD2NsYXVkZS1zb25uZXQtNagB8Z7X1gawAQLCAUkICRAAGhsBO+0BbaIBM3ICMuoDTzcFdqEFe6URDE8EJq0gBDIEEnHPJToExr9q90IEusgoGUoEnDeBNlAQWgTZBeFWYAJoAXAD2gFgChZwcmVmaXhfYmVmb3JlX2Jsb2NrX3YxEiAIsTmQXNX/n+3UeYehcqBun8uB98pMCRLivOwdgQaGDCIAMiDCwBPIapyS4i+Wbz2GF3aPi3pEyQKtzAl7+h4JivtOH0gDEgwmgazLkjw7TI50zZIaDEty8eBOCS8SsyRaRSIwa6aqGVd0zpzrVwi8IVqMSLZ2hP5GZpjFIe/j1FXPnKO0+tS2eGure9Ci2DBrA2CpKvoDPVn7lMKB2+XChwCgQlDkwknN5odUEDNqDna79tD8L3+whA1v0Tt++MwiQXN1NVzmV58JlqhRCcQC+BAT+CoT0x3o5QUpAPIbbWzjfOuZGy4Zr8sM7+Koo4s2TSwVf9GjS17FDcbQvLHzjjpwbWF8pFHre0nqn8MDdrEh2u6iz3LD4u7sfytlenjE8zoMahgc8bH3DhMKP3Kr+go61Wj2OtdcYh53Ro3JwUAg9yqLLbECgipO3nKO0XWXguyfjd+oO1Eqxg5Zyc6XzV95p/OgXbT6zLmzWx7jALh6LcIlC6Z8Ai6bXPbWIuRRymfgjJEtaXhGMI6hPZ6cQEo7BuDT8SfusGuepjI53TP0CKlVvTmA+1gLypLaE8et8P+B+EQ3x4X5StBZKXFUxmDVn6g96185X03OfyfPAUC/8u6B5PqQovb3ZzP7rDVoKtToXj6UNpo0LAtui0qU1PBCfZHqmSlnQ1B3Pn8yngzqC/FbR6E8TUgPsnlqGtcYSVEQIziapL0L9fKH+qUegzSGzfWxvNzTW8AQoJ0XqZ1ynxe4P7BVjtyqNR1Y1S2kcE1T0lTA2tW0R+NRVCSKhnq9u7YqUAqRq5vx95QU8hc72ntV2QpGqeqEK0TMGXElWoIWhJw4YKCBk6kVHrtI8AXVbgh/8FG+Q80XJwz/Na4YAQ=="
+        }
+      ],
+      "container": null,
+      "stop_reason": null,
+      "stop_sequence": null,
+      "stop_details": null,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 10605,
+        "cache_read_input_tokens": 22854,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 10605
+        },
+        "output_tokens": 2,
+        "service_tier": "standard",
+        "inference_geo": "global",
+        "speed": "standard"
+      },
+      "diagnostics": null,
+      "context_management": null
+    },
+    "parent_tool_use_id": null,
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "uuid": "711122d3-3726-4ad5-9ec4-04fe240349bb",
+    "timestamp": "2026-10-19T08:06:09.520Z",
+    "request_id": "req_011CgBFWYacUMLMzMgyWYjfz"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-5",
+      "id": "msg_011CgBFWYpFsfHwLY5ezpxpu",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01PSCkgK1JREKzHLoVXvyCgn",
+          "name": "ToolSearch",
+          "input": {
+            "query": "select:mcp__branding-trend-ai-assistant__query_weekly_interest",
+            "max_results": 5
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "container": null,
+      "stop_reason": null,
+      "stop_sequence": null,
+      "stop_details": null,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 10605,
+        "cache_read_input_tokens": 22854,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 10605
+        },
+        "output_tokens": 2,
+        "service_tier": "standard",
+        "inference_geo": "global",
+        "speed": "standard"
+      },
+      "diagnostics": null,
+      "context_management": null
+    },
+    "parent_tool_use_id": null,
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "uuid": "433b1657-339d-4a4a-947a-4e2a103fe025",
+    "timestamp": "2026-10-19T08:06:10.164Z",
+    "request_id": "req_011CgBFWYacUMLMzMgyWYjfz"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_01PSCkgK1JREKzHLoVXvyCgn",
+          "content": [
+            {
+              "type": "tool_reference",
+              "tool_name": "mcp__branding-trend-ai-assistant__query_weekly_interest"
+            }
+          ]
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "uuid": "bacda420-6935-49d6-81c9-4a8f2a95f4c6",
+    "timestamp": "2026-10-19T08:06:10.658Z",
+    "tool_use_result": {
+      "matches": [
+        "mcp__branding-trend-ai-assistant__query_weekly_interest"
+      ],
+      "query": "select:mcp__branding-trend-ai-assistant__query_weekly_interest",
+      "total_deferred_tools": 24
+    }
+  },
+  {
+    "type": "system",
+    "subtype": "thinking_tokens",
+    "estimated_tokens": 50,
+    "estimated_tokens_delta": 50,
+    "uuid": "2e2c28b7-ee3e-467d-ab29-0d95d60cd042",
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93"
+  },
+  {
+    "type": "system",
+    "subtype": "thinking_tokens",
+    "estimated_tokens": 243,
+    "estimated_tokens_delta": 193,
+    "uuid": "13d7eba2-acfa-4eef-94c9-4b5f5ec18232",
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-5",
+      "id": "msg_011CgBFWtcdECvNB68MQZPQ4",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "thinking",
+          "thinking": "",
+          "signature": "EsMHCr4DCBIYAipAcnF/u5RIuudR65U4WizqIQ32caJBMEh2WDzCvY10l534tMvd5Ukycc4mz4HwLrR5ArSFjmU+M2vlnatVe2vMPTIPY2xhdWRlLXNvbm5ldC01OABCCHRoaW5raW5nWiQ1ZmQ1ZWM3Zi1iNDY0LTQ5ZWItYTg1MC05N2U0ODQxNTg5YWFyEKNvcddeJrf5NGyNZrypav2IAQGaAREKD2NsYXVkZS1zb25uZXQtNagB9Z7X1gawAQLCAVsIDxAAGi0BO+0BbaIBM3ICMuoDTzcFdqEFe6URDE8EJq0KVVcDTzcLsaQFTcERZXIEJq0gBDIEEnHPJToExr9q90IEusgoGUoEnDeBNlAQWgT1pfqHYARoAXAD2gGgAQoWcHJlZml4X2JlZm9yZV9ibG9ja192MRIg9P33nTj9qQuv95cpDt/DhVRJQrUyEIa4S4XZmgSx3woiQOVRvUJ1HTCJxMFnka4xyTU78QAB4IIEAc7gOX4g1mNKud2v/NgKKLlAGZhrGItcPGNjFG7aGz8aZzYKRuv5OM0yIMLAE8hqnJLiL5ZvPYYXdo+LekTJAq3MCXv6HgmK+04fSAMSDKYOwFHjjEuDrFT0VRoMGDWrJ1JfjnwRrTxpIjCa6tnZjr4DwuZahPECwqNfWCoc6yaN65PuvLbqks3wBv8Zdn2v17fGWeix0Ij1PxkqsQMpi/0A2YvsbpYDPcGQun7d8MarYon1LW1DKhrqNhi1qb/H4M5TVnmDOYcLcnpA2OMfR0vuI2egfrUiky7/QYqNwC1kv/HHEhMmHVhrBoC3vz+mSq1/NO/Bxm3zRAAb70kppEQEs+85vaiV9SuHx+RZopmUFTQPVnGxiZF4/+N7U7733reGxI696btgNk4Vz2FNyhOiIHYAjeLyFuTX5247zvfvdLCB4Jjnq/pejsga0l/DTjvxgsGqVPqW9gp2VbbdnMkgU1td170wyUYjn3+X/Eywo9RuzDay43IGkZTi/53xPMTkegtb1bWT7P74Liiba6J2inz3l/3a3hOx5B2X3qp5G+H6GcLoW3u1LChCjK//0Aro9QjZznCYv/DneZmfWC0m+QgULLrBPp6u6Y/OuxQb+PPin0NAAr6fhz49rCb4x5S7jdmhyMgvSPtphjEqOsUrtatAAkp/3wGdxedKTcpuO2DuvJaCDldOPLv+vewQWwNEJOMQT3nS0qkFo7ru+Mg2bzp/V4sZlb4LQiRKW6+y9jvWA6a1Ilqum38GnAxel9nwvRW59hvRiaZoO69JGAE="
+        }
+      ],
+      "container": null,
+      "stop_reason": null,
+      "stop_sequence": null,
+      "stop_details": null,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 969,
+        "cache_read_input_tokens": 33459,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 969
+        },
+        "output_tokens": 4,
+        "service_tier": "standard",
+        "inference_geo": "global",
+        "speed": "standard"
+      },
+      "diagnostics": null,
+      "context_management": null
+    },
+    "parent_tool_use_id": null,
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "uuid": "9b387d0c-18b6-489a-b4bf-1b49913a38f8",
+    "timestamp": "2026-10-19T08:06:14.271Z",
+    "request_id": "req_011CgBFWtPUYpRrruHbYPMns"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-5",
+      "id": "msg_011CgBFWtcdECvNB68MQZPQ4",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_011Y5H4bECiRxsSz5Vg5GWfd",
+          "name": "mcp__branding-trend-ai-assistant__query_weekly_interest",
+          "input": {
+            "keyword": "퍼스널브랜딩",
+            "start_date": "2026-01-01",
+            "end_date": "2026-03-31"
+          },
+          "caller": {
+            "type": "direct"
+          }
+        }
+      ],
+      "container": null,
+      "stop_reason": null,
+      "stop_sequence": null,
+      "stop_details": null,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 969,
+        "cache_read_input_tokens": 33459,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 969
+        },
+        "output_tokens": 4,
+        "service_tier": "standard",
+        "inference_geo": "global",
+        "speed": "standard"
+      },
+      "diagnostics": null,
+      "context_management": null
+    },
+    "parent_tool_use_id": null,
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "uuid": "12782085-ddc5-4d73-9204-3a7562519fce",
+    "timestamp": "2026-10-19T08:06:14.959Z",
+    "request_id": "req_011CgBFWtPUYpRrruHbYPMns",
+    "tool_use_meta": [
+      {
+        "id": "toolu_011Y5H4bECiRxsSz5Vg5GWfd",
+        "display_name": "Query Weekly Interest",
+        "server_display_name": "branding-trend-ai-assistant"
+      }
+    ]
+  },
+  {
+    "type": "rate_limit_event",
+    "rate_limit_info": {
+      "status": "allowed",
+      "resetsAt": 1792398000,
+      "rateLimitType": "five_hour",
+      "overageStatus": "rejected",
+      "overageDisabledReason": "org_level_disabled",
+      "isUsingOverage": false,
+      "unifiedWindows": {
+        "five_hour": {
+          "utilization": 0.15,
+          "resetsAt": 1792398000
+        },
+        "seven_day": {
+          "utilization": 0.28,
+          "resetsAt": 1792508400
+        }
+      }
+    },
+    "uuid": "8ecb2cd1-820b-4073-8197-110526fa85ab",
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_011Y5H4bECiRxsSz5Vg5GWfd",
+          "type": "tool_result",
+          "content": "{\"metric_note\":\"네이버 데이터랩 값은 실제 검색량이 아니라 동일한 조회 조건 안에서 비교하는 상대 검색 관심도 지수입니다.\",\"keyword\":\"퍼스널브랜딩\",\"start_date\":\"2026-01-01\",\"end_date\":\"2026-03-31\",\"observation_count\":13,\"records\":[{\"date\":\"2026-01-05\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.46496},{\"date\":\"2026-01-12\",\"keyword\":\"퍼스널브랜딩\",\"value\":12.5398},{\"date\":\"2026-01-19\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.96257},{\"date\":\"2026-01-26\",\"keyword\":\"퍼스널브랜딩\",\"value\":10.52945},{\"date\":\"2026-02-02\",\"keyword\":\"퍼스널브랜딩\",\"value\":9.71337},{\"date\":\"2026-02-09\",\"keyword\":\"퍼스널브랜딩\",\"value\":10.35031},{\"date\":\"2026-02-16\",\"keyword\":\"퍼스널브랜딩\",\"value\":10.19108},{\"date\":\"2026-02-23\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.50477},{\"date\":\"2026-03-02\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.38535},{\"date\":\"2026-03-09\",\"keyword\":\"퍼스널브랜딩\",\"value\":12.99761},{\"date\":\"2026-03-16\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.08678},{\"date\":\"2026-03-23\",\"keyword\":\"퍼스널브랜딩\",\"value\":10.82802},{\"date\":\"2026-03-30\",\"keyword\":\"퍼스널브랜딩\",\"value\":8.67834}]}"
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "uuid": "40ad0bf3-e3f3-4a88-bb2b-510ebd9fd35c",
+    "timestamp": "2026-10-19T08:06:16.664Z",
+    "tool_use_result": {
+      "content": "{\"metric_note\":\"네이버 데이터랩 값은 실제 검색량이 아니라 동일한 조회 조건 안에서 비교하는 상대 검색 관심도 지수입니다.\",\"keyword\":\"퍼스널브랜딩\",\"start_date\":\"2026-01-01\",\"end_date\":\"2026-03-31\",\"observation_count\":13,\"records\":[{\"date\":\"2026-01-05\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.46496},{\"date\":\"2026-01-12\",\"keyword\":\"퍼스널브랜딩\",\"value\":12.5398},{\"date\":\"2026-01-19\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.96257},{\"date\":\"2026-01-26\",\"keyword\":\"퍼스널브랜딩\",\"value\":10.52945},{\"date\":\"2026-02-02\",\"keyword\":\"퍼스널브랜딩\",\"value\":9.71337},{\"date\":\"2026-02-09\",\"keyword\":\"퍼스널브랜딩\",\"value\":10.35031},{\"date\":\"2026-02-16\",\"keyword\":\"퍼스널브랜딩\",\"value\":10.19108},{\"date\":\"2026-02-23\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.50477},{\"date\":\"2026-03-02\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.38535},{\"date\":\"2026-03-09\",\"keyword\":\"퍼스널브랜딩\",\"value\":12.99761},{\"date\":\"2026-03-16\",\"keyword\":\"퍼스널브랜딩\",\"value\":11.08678},{\"date\":\"2026-03-23\",\"keyword\":\"퍼스널브랜딩\",\"value\":10.82802},{\"date\":\"2026-03-30\",\"keyword\":\"퍼스널브랜딩\",\"value\":8.67834}]}",
+      "structuredContent": {
+        "metric_note": "네이버 데이터랩 값은 실제 검색량이 아니라 동일한 조회 조건 안에서 비교하는 상대 검색 관심도 지수입니다.",
+        "keyword": "퍼스널브랜딩",
+        "start_date": "2026-01-01",
+        "end_date": "2026-03-31",
+        "observation_count": 13,
+        "records": [
+          {
+            "date": "2026-01-05",
+            "keyword": "퍼스널브랜딩",
+            "value": 11.46496
+          },
+          {
+            "date": "2026-01-12",
+            "keyword": "퍼스널브랜딩",
+            "value": 12.5398
+          },
+          {
+            "date": "2026-01-19",
+            "keyword": "퍼스널브랜딩",
+            "value": 11.96257
+          },
+          {
+            "date": "2026-01-26",
+            "keyword": "퍼스널브랜딩",
+            "value": 10.52945
+          },
+          {
+            "date": "2026-02-02",
+            "keyword": "퍼스널브랜딩",
+            "value": 9.71337
+          },
+          {
+            "date": "2026-02-09",
+            "keyword": "퍼스널브랜딩",
+            "value": 10.35031
+          },
+          {
+            "date": "2026-02-16",
+            "keyword": "퍼스널브랜딩",
+            "value": 10.19108
+          },
+          {
+            "date": "2026-02-23",
+            "keyword": "퍼스널브랜딩",
+            "value": 11.50477
+          },
+          {
+            "date": "2026-03-02",
+            "keyword": "퍼스널브랜딩",
+            "value": 11.38535
+          },
+          {
+            "date": "2026-03-09",
+            "keyword": "퍼스널브랜딩",
+            "value": 12.99761
+          },
+          {
+            "date": "2026-03-16",
+            "keyword": "퍼스널브랜딩",
+            "value": 11.08678
+          },
+          {
+            "date": "2026-03-23",
+            "keyword": "퍼스널브랜딩",
+            "value": 10.82802
+          },
+          {
+            "date": "2026-03-30",
+            "keyword": "퍼스널브랜딩",
+            "value": 8.67834
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-5",
+      "id": "msg_011CgBFXL64ciW3dWDHPuEzm",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "```json\n{\"tool_call_succeeded\": true, \"firestore_data_returned\": true, \"record_count\": 13, \"error_type\": null}\n```"
+        }
+      ],
+      "container": null,
+      "stop_reason": null,
+      "stop_sequence": null,
+      "stop_details": null,
+      "usage": {
+        "input_tokens": 2,
+        "cache_creation_input_tokens": 896,
+        "cache_read_input_tokens": 34428,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 896
+        },
+        "output_tokens": 1,
+        "service_tier": "standard",
+        "inference_geo": "global",
+        "speed": "standard"
+      },
+      "diagnostics": null,
+      "context_management": null
+    },
+    "parent_tool_use_id": null,
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "uuid": "72f34bc4-340d-49d0-b001-d88547281d95",
+    "timestamp": "2026-10-19T08:06:18.400Z",
+    "request_id": "req_011CgBFXKrAbP7gi2Ywjkuvg"
+  },
+  {
+    "is_error": false,
+    "duration_api_ms": 11263,
+    "num_turns": 3,
+    "stop_reason": "end_turn",
+    "session_id": "c17e952a-ffef-4c5f-b4ae-8e4a6c010a93",
+    "total_cost_usd": 0.07508719999999999,
+    "usage": {
+      "input_tokens": 6,
+      "cache_creation_input_tokens": 12470,
+      "cache_read_input_tokens": 90741,
+      "output_tokens": 591,
+      "output_tokens_details": {
+        "thinking_tokens": 304
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 12470,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "global",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 48,
+          "cache_read_input_tokens": 34428,
+          "cache_creation_input_tokens": 896,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 896
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 1012,
+        "outputTokens": 25,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.001137,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty"
+      },
+      "claude-sonnet-5": {
+        "inputTokens": 6,
+        "outputTokens": 591,
+        "cacheReadInputTokens": 90741,
+        "cacheCreationInputTokens": 12470,
+        "webSearchRequests": 0,
+        "costUSD": 0.0739502,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "canonicalModel": "claude-sonnet-5",
+        "provider": "firstParty"
+      }
+    },
+    "permission_denials": [],
+    "terminal_reason": "completed",
+    "fast_mode_state": "off",
+    "fast_mode_disabled_reason": "sdk_opt_in_required",
+    "subagent_stats": {
+      "spawned": 0,
+      "requested": {
+        "background": 0,
+        "foreground": 0,
+        "unset": 0
+      },
+      "started_in_background": 0,
+      "max_depth": 0,
+      "spawned_by_subagents": 0,
+      "completed": 0,
+      "failed": 0,
+      "killed": {
+        "parent": 0,
+        "user": 0,
+        "system": 0
+      },
+      "refused": {
+        "depth_limit": 0,
+        "concurrency_limit": 0,
+        "budget": 0
+      },
+      "by_type": {}
+    },
+    "subtype": "success",
+    "api_error_status": null,
+    "result": "```json\n{\"tool_call_succeeded\": true, \"firestore_data_returned\": true, \"record_count\": 13, \"error_type\": null}\n```",
+    "ttft_ms": 4018,
+    "ttft_stream_ms": 2030,
+    "time_to_request_ms": 592,
+    "type": "result",
+    "duration_ms": 12965,
+    "uuid": "55ebf4e0-9b77-44d7-a168-c276fa14806b",
+    "queued_turn_count": 0
+  }
+]

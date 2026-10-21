@@ -85,6 +85,8 @@ def _log_provider_error(exc: Exception) -> None:
 class OpenAIChatService:
     def __init__(self, settings: AISettings, client: Any | None = None):
         self._model = settings.model
+        self._max_output_tokens = settings.max_output_tokens
+        self._token_parameter = settings.token_parameter
         self._client = client or OpenAI(
             api_key=settings.api_key,
             base_url=settings.base_url,
@@ -107,6 +109,7 @@ class OpenAIChatService:
         while True:
             request_options: dict[str, Any] = {
                 "model": self._model,
+                self._token_parameter: self._max_output_tokens,
                 "messages": request_messages,
             }
             if tool_executor is not None and tool_calls_used < MAX_TOOL_CALLS:

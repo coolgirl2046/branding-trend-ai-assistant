@@ -26,6 +26,9 @@ async function readResponse(response) {
 }
 
 export async function apiRequest(path, options = {}) {
+  if (!API_BASE_URL) {
+    throw new ApiError("API 서버 주소가 설정되지 않았습니다. 배포 환경의 API_BASE_URL을 확인해 주세요.");
+  }
   const headers = new Headers(options.headers || {});
   const hasBody = options.body !== undefined;
 

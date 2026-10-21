@@ -34,6 +34,8 @@ class AISettings:
     base_url: str
     model: str
     provider: str = "openai"
+    max_output_tokens: int = 800
+    token_parameter: str = "max_completion_tokens"
 
 
 DEFAULT_AI_PROVIDER = "openai"
@@ -109,7 +111,19 @@ def load_ai_settings(
             "필수 AI 환경 변수가 없습니다: " + ", ".join(missing)
         )
 
+    try:
+        max_output_tokens = int(os.getenv("AI_MAX_OUTPUT_TOKENS", "800"))
+    except ValueError:
+        raise ConfigurationError("AI_MAX_OUTPUT_TOKENS는 1~4096 정수여야 합니다.") from None
+    if not 1 <= max_output_tokens <= 4096:
+        raise ConfigurationError("AI_MAX_OUTPUT_TOKENS는 1~4096 정수여야 합니다.")
+    token_parameter = os.getenv("AI_TOKEN_PARAMETER", "max_completion_tokens").strip()
+    if token_parameter not in {"max_completion_tokens", "max_tokens"}:
+        raise ConfigurationError("AI_TOKEN_PARAMETER 설정을 확인해 주세요.")
+
     return AISettings(
+        max_output_tokens=max_output_tokens,
+        token_parameter=token_parameter,
         provider=provider,
         api_key=values[api_key_name],
         base_url=values[base_url_name],

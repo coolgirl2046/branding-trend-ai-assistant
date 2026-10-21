@@ -31,7 +31,7 @@
     </header>
 
     <div id="app-loading" role="status" aria-live="polite" hidden>
-      데이터를 불러오는 중입니다.
+      데이터를 불러오는 중입니다. 첫 접속은 서버 준비로 지연될 수 있습니다. 잠시 기다려 주세요.
     </div>
     <div id="app-error" role="alert" hidden>
       <p id="app-error-message"></p>
@@ -234,6 +234,7 @@
       <p>데이터 출처: 네이버 데이터랩 검색어 트렌드</p>
     </footer>
 
+    <script src="./js/runtime-config.js"></script>
     <script type="module" src="./js/app.js"></script>
   </body>
 </html>

@@ -350,6 +350,7 @@ class ChatApiTests(unittest.TestCase):
 
         self.assertEqual(answer, "테스트 답변")
         call = mock_client.chat.completions.create.call_args.kwargs
+        self.assertEqual(call["max_completion_tokens"], 800)
         self.assertEqual(call["model"], "test-model")
         self.assertEqual(call["messages"][0], {"role": "system", "content": "시스템 규칙"})
         self.assertEqual(call["messages"][1], {"role": "user", "content": "질문"})
@@ -573,6 +574,8 @@ class FunctionCallingServiceTests(unittest.TestCase):
         )
 
         self.assertEqual(answer, "도구 결과를 요약했습니다.")
+        for request in self.mock_client.chat.completions.create.call_args_list:
+            self.assertEqual(request.kwargs["max_completion_tokens"], 800)
         first_call = self.mock_client.chat.completions.create.call_args_list[0].kwargs
         self.assertEqual(first_call["tools"], [FUNCTION_TOOL_SCHEMA])
         self.assertEqual(first_call["tool_choice"], "auto")

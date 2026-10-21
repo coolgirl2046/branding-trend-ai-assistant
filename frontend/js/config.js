@@ -1,10 +1,5 @@
-const isLocalDevelopment = ["localhost", "127.0.0.1", ""].includes(
-  window.location.hostname,
-);
-
-// Use the deployed Render service outside local development.
-const deployedApiBaseUrl = "https://branding-trend-ai-assistant.onrender.com";
-
+const isLocalDevelopment = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+const configuredApiBaseUrl = globalThis.__APP_CONFIG__?.API_BASE_URL;
 export const API_CONFIG = Object.freeze({
-  baseUrl: isLocalDevelopment ? "http://127.0.0.1:8000" : deployedApiBaseUrl,
+  baseUrl: configuredApiBaseUrl || (isLocalDevelopment ? "http://127.0.0.1:8000" : ""),
 });
