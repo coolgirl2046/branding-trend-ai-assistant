@@ -202,6 +202,9 @@ MCP는 외부 클라이언트 → `query_weekly_interest` → 공통 조회 서�
 
 - [Vercel 최종 배포](evidence/submission_vercel_ready_oct21.png)
   주석: 그래프 수정 커밋 `f35cd3f`의 최종 배포 화면입니다. 빨간 Error 행은 `7bc1366` 첫 빌드에서 API_BASE_URL이 누락되어 실패한 기록이며, Production 환경변수에 Render API 주소를 설정한 후 배포에 성공했습니다.
+
+화면 14는 그래프 선 채우기 오류를 수정한 프론트엔드 커밋 f35cd3f의 배포가 Ready와 Production으로 표시된 화면입니다. 이후 커밋에서는 frontend/와 backend/ 앱 코드는 변경하지 않고, README·제출 증빙·보고서 PDF만 추가·수정했습니다.
+
 - [Render 커밋 7bc1366 Live](evidence/submission_render_live_oct21.png)
   주석: 상단 커밋과 Events의 Deploy live for 7bc1366에서 백엔드 보완 코드의 배포를 확인했습니다. `f35cd3f`는 프론트엔드 CSS만 변경한 커밋입니다.
 - [재배포 후 질문과 AI 답변](evidence/submission_chat_after_deploy_oct21.png)
